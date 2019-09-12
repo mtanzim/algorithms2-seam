@@ -7,6 +7,8 @@
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.awt.Color;
+
 public class SeamCarver {
     Picture picture;
 
@@ -33,7 +35,12 @@ public class SeamCarver {
 
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
-        return 0.0;
+
+        Color curColor = picture.get(x, y);
+        // StdOut.println("row: " + y + " col: " + x + " color: " + curColor);
+        if (x < 1 || x > width() - 2 || y < 1 || y > height() - 2) return 1000;
+        return 5.0;
+
     }
 
     // sequence of indices for horizontal seam
