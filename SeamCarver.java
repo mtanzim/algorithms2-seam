@@ -11,30 +11,22 @@ import java.awt.Color;
 
 public class SeamCarver {
     Picture picture;
+    double energyArray[][];
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
         this.picture = picture;
+        this.energyArray = new double[width()][height()];
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++) {
+                energyArray[col][row] = calculateEnergy(col, row);
+            }
+        }
 
-    }
-
-    // current picture
-    public Picture picture() {
-        return picture;
-    }
-
-    // width of current picture
-    public int width() {
-        return picture.width();
-    }
-
-    // height of current picture
-    public int height() {
-        return picture.height();
     }
 
     // energy of pixel at column x and row y
-    public double energy(int x, int y) {
+    private double calculateEnergy(int x, int y) {
 
         if (x < 1 || x > width() - 2 || y < 1 || y > height() - 2)
             return 1000;
@@ -56,16 +48,31 @@ public class SeamCarver {
         int bg = bottom.getGreen();
         int bb = bottom.getBlue();
 
-        int deltaSqX = ((rr - lr) * (rr - lr))
-                + ((rg - lg) * (rg - lg))
-                + ((rb - lb) * (rb - lb));
+        int deltaSqX = ((rr - lr) * (rr - lr)) + ((rg - lg) * (rg - lg)) + ((rb - lb) * (rb - lb));
 
-        int deltaSqY = ((br - tr) * (br - tr))
-                + ((bg - tg) * (bg - tg))
-                + ((bb - tb) * (bb - tb));
+        int deltaSqY = ((br - tr) * (br - tr)) + ((bg - tg) * (bg - tg)) + ((bb - tb) * (bb - tb));
 
         return Math.sqrt(deltaSqX * 1.0 + deltaSqY * 1.0);
 
+    }
+
+    // current picture
+    public Picture picture() {
+        return picture;
+    }
+
+    // width of current picture
+    public int width() {
+        return picture.width();
+    }
+
+    // height of current picture
+    public int height() {
+        return picture.height();
+    }
+
+    public double energy(int x, int y) {
+        return energyArray[x][y];
     }
 
     // sequence of indices for horizontal seam
