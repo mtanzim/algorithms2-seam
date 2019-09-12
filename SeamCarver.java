@@ -43,13 +43,26 @@ public class SeamCarver {
         Color top = picture.get(x, y + 1);
         Color bottom = picture.get(x, y - 1);
 
-        int deltaSqX = ((right.getRed() - left.getRed()) * (right.getRed() - left.getRed()))
-                + ((right.getGreen() - left.getGreen()) * (right.getGreen() - left.getGreen()))
-                + ((right.getBlue() - left.getBlue()) * (right.getBlue() - left.getBlue()));
+        int rr = right.getRed();
+        int rg = right.getGreen();
+        int rb = right.getBlue();
+        int lr = left.getRed();
+        int lg = left.getGreen();
+        int lb = left.getBlue();
+        int tr = top.getRed();
+        int tg = top.getGreen();
+        int tb = top.getBlue();
+        int br = bottom.getRed();
+        int bg = bottom.getGreen();
+        int bb = bottom.getBlue();
 
-        int deltaSqY = ((bottom.getRed() - top.getRed()) * (bottom.getRed() - top.getRed()))
-                + ((bottom.getGreen() - top.getGreen()) * (bottom.getGreen() - top.getGreen()))
-                + ((bottom.getBlue() - top.getBlue()) * (bottom.getBlue() - top.getBlue()));
+        int deltaSqX = ((rr - lr) * (rr - lr))
+                + ((rg - lg) * (rg - lg))
+                + ((rb - lb) * (rb - lb));
+
+        int deltaSqY = ((br - tr) * (br - tr))
+                + ((bg - tg) * (bg - tg))
+                + ((bb - tb) * (bb - tb));
 
         return Math.sqrt(deltaSqX * 1.0 + deltaSqY * 1.0);
 
