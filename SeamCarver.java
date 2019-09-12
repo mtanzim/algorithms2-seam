@@ -36,10 +36,22 @@ public class SeamCarver {
     // energy of pixel at column x and row y
     public double energy(int x, int y) {
 
-        Color curColor = picture.get(x, y);
-        // StdOut.println("row: " + y + " col: " + x + " color: " + curColor);
-        if (x < 1 || x > width() - 2 || y < 1 || y > height() - 2) return 1000;
-        return 5.0;
+        if (x < 1 || x > width() - 2 || y < 1 || y > height() - 2)
+            return 1000;
+        Color left = picture.get(x - 1, y);
+        Color right = picture.get(x + 1, y);
+        Color top = picture.get(x, y + 1);
+        Color bottom = picture.get(x, y - 1);
+
+        int deltaSqX = ((right.getRed() - left.getRed()) * (right.getRed() - left.getRed()))
+                + ((right.getGreen() - left.getGreen()) * (right.getGreen() - left.getGreen()))
+                + ((right.getBlue() - left.getBlue()) * (right.getBlue() - left.getBlue()));
+
+        int deltaSqY = ((bottom.getRed() - top.getRed()) * (bottom.getRed() - top.getRed()))
+                + ((bottom.getGreen() - top.getGreen()) * (bottom.getGreen() - top.getGreen()))
+                + ((bottom.getBlue() - top.getBlue()) * (bottom.getBlue() - top.getBlue()));
+
+        return Math.sqrt(deltaSqX * 1.0 + deltaSqY * 1.0);
 
     }
 
