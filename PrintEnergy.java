@@ -27,6 +27,8 @@ public class PrintEnergy {
                 StdOut.printf("%9.2f ", sc.energy(col, row));
             StdOut.println();
         }
+
+        sc.traverseDownFromPixel(3,0);
     }
 
 }
