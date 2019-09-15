@@ -44,6 +44,7 @@
       <name>java.awt.FileDialog</name>
       <name>java.awt.FlowLayout</name>
       <name>java.awt.FocusTraversalPolicy</name>
+      <name>java.awt.Font</name>
       <name>java.awt.FontFormatException</name>
       <name>java.awt.FontMetrics</name>
       <name>java.awt.Frame</name>

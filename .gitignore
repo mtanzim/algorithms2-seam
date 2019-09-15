@@ -1,7 +1,7 @@
 # File created using '.gitignore Generator' for Visual Studio Code: https://bit.ly/vscode-gig
 
-# Created by https://www.gitignore.io/api/linux,visualstudiocode,code-java,java
-# Edit at https://www.gitignore.io/?templates=linux,visualstudiocode,code-java,java
+# Created by https://www.gitignore.io/api/linux,visualstudiocode,code-java,java,java-web
+# Edit at https://www.gitignore.io/?templates=linux,visualstudiocode,code-java,java,java-web
 
 ### Code-Java ###
 # Language Support for Java(TM) by Red Hat extension for Visual Studio Code - https://marketplace.visualstudio.com/items?itemName=redhat.java
@@ -35,6 +35,10 @@ factoryConfiguration.json
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+### Java-Web ###
+## ignoring target file
+target/
+
 ### Linux ###
 *~
 
@@ -61,7 +65,8 @@ hs_err_pid*
 # Ignore all local history of files
 .history
 
-# End of https://www.gitignore.io/api/linux,visualstudiocode,code-java,java
+# End of https://www.gitignore.io/api/linux,visualstudiocode,code-java,java,java-web
 
 # Custom rules (everything added below won't be overriden by 'Generate .gitignore File' if you use 'Update' option)
 
+.idea/workspace.xml

@@ -18,7 +18,6 @@
            * switch statement with no default; seems OK when used for cases with (int) (4 * Math.random())
            * class  naming convention (defer to Checkstyle)
            * method naming convention (defer to Checkstyle)
-           * unused field (defer to PMD/IntelliJ since it highlight entire class)
            * class defines compareTo() and inherits equals()
       -->
     <Match>
@@ -90,7 +89,6 @@
                           UCPM_USE_CHARACTER_PARAMETERIZED_METHOD,
                           USBR_UNNECESSARY_STORE_BEFORE_RETURN,
                           UVA_USE_VAR_ARGS,
-                          UUF_UNUSED_FIELD,
                           WEM_WEAK_EXCEPTION_MESSAGING" />
     </Match>
 
@@ -343,12 +341,6 @@
         <Class name = "~(Transform2D)(126)?" />
         <Method name="copy" params="double[]" returns="double[]" />
         <BugPattern name="PZLA_PREFER_ZERO_LENGTH_ARRAYS" />
-    </Match>
-
-    <!-- GUI is side effect -->
-    <Match>
-        <Class name = "Keyboard" />
-        <BugPattern name="DLS_DEAD_LOCAL_STORE" />
     </Match>
 
     <!-- false positive in LFSR with String instance variable -->
