@@ -8,7 +8,6 @@ import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.awt.Color;
-import java.util.ArrayList;
 
 public class SeamCarver {
     Picture picture;
@@ -75,27 +74,30 @@ public class SeamCarver {
     //     }
     // }
 
-    private void addPixel(int x, int y, ArrayList<Pixel> vertices, ArrayList<Pixel> edgeTo,
-                          ArrayList<Double> energyTo) {
+    // private void addPixel(int x, int y, ArrayList<Pixel> vertices, ArrayList<Pixel> edgeTo,
+    //                       ArrayList<Double> energyTo) {
+    //     boolean debug = false;
+    //
+    //     // StdOut.println("Currently at x: " + x + " y: " + y);
+    //     if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
+    //     for (int i = -1; i < 2; i++) {
+    //         if (x + i < 0 || x + i > width() - 1) continue;
+    //         vertices.add(new Pixel(x, y, energy(x, y)));
+    //         edgeTo.add(new Pixel(x + i, y + 1, energy(x + i, y + 1)));
+    //         energyTo.add(energy(x + i, y + 1));
+    //     }
+    // }
+
+    private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel pixelTo[][]) {
         boolean debug = false;
-
-        // StdOut.println("Currently at x: " + x + " y: " + y);
-        if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
-        for (int i = -1; i < 2; i++) {
-            if (x + i < 0 || x + i > width() - 1) continue;
-            vertices.add(new Pixel(x, y, energy(x, y)));
-            edgeTo.add(new Pixel(x + i, y + 1, energy(x + i, y + 1)));
-            energyTo.add(energy(x + i, y + 1));
-        }
-    }
-
-    private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel[][] pixelTo) {
+        if (debug) StdOut.println("Relaxing edge to " + (new Pixel(x2,y2, energy(x2,y2)).toString()));
         if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2,y2)) {
             energyTo[x2][y2] = energyTo[x1][y1] + energy(x2,y2);
             pixelTo[x2][y2] = new Pixel(x1,y1, energy(x1,y1));
         }
     }
 
+    // traverse and relax
     private void travesePixel(int x, int y, double energyTo[][], Pixel pixelTo[][]) {
         boolean debug = false;
 
@@ -103,9 +105,7 @@ public class SeamCarver {
         if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
         for (int i = -1; i < 2; i++) {
             if (x + i < 0 || x + i > width() - 1) continue;
-            relax(x,y,x+i, i+1, energyTo, pixelTo);
-        //    from: x,y
-        //    to: x-1,y+1;x,y+1; x+1, y+1
+            relax(x,y,x+i, y+1, energyTo, pixelTo);
 
         }
     }
@@ -119,17 +119,24 @@ public class SeamCarver {
 
         double energyTo[][] = new double[width()][height()];
         Pixel pixelTo[][] = new Pixel[width()][height()];
-        for (int i =0; i < height()-1; i++) {
-            for (int k=0; k < width()-1; k++) {
-                energyTo[i][k]= Double.POSITIVE_INFINITY;
+        for (int i =0; i < height(); i++) {
+            for (int k=0; k < width(); k++) {
+                energyTo[k][i]= Double.POSITIVE_INFINITY;
             }
         }
+        energyTo[x][y] = 0;
 
-        for (int i = y + 1; i < height() - 1; i++) {
+        for (int i = y; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
                 if (k < 0 || k > width() - 1) continue;
                 travesePixel(k,i,energyTo,pixelTo);
             }
+        }
+
+        for (int row = 0; row < height(); row++) {
+            for (int col = 0; col < width(); col++)
+                StdOut.printf("%9.2f ", energyTo[col][row]);
+            StdOut.println();
         }
 
     }
