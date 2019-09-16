@@ -4,9 +4,6 @@
  *  Description: Entry for Seam
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.Bag;
-import edu.princeton.cs.algs4.Edge;
-import edu.princeton.cs.algs4.EdgeWeightedDigraph;
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -46,37 +43,37 @@ public class SeamCarver {
         }
     }
 
-    class PixelEdge {
-        private final Pixel v;
-        private final Pixel w;
-        private final double weight;
-
-        public PixelEdge(Pixel v, Pixel w, double weight) {
-            this.v = v;
-            this.w = w;
-            this.weight = weight;
-        }
-
-        public Pixel from() {
-            return v;
-        }
-
-        public Pixel to() {
-            return w;
-        }
-    }
-
-    class PixelGraph {
-        private Bag<PixelEdge>[] adj;    // adj[v] = adjacency list for vertex v
-
-        public PixelGraph() {
-
-        }
-
-        public void addEdge(PixelEdge e) {
-            adj[e.from()].add(e.to());
-        }
-    }
+    // class PixelEdge {
+    //     private final Pixel v;
+    //     private final Pixel w;
+    //     private final double weight;
+    //
+    //     public PixelEdge(Pixel v, Pixel w, double weight) {
+    //         this.v = v;
+    //         this.w = w;
+    //         this.weight = weight;
+    //     }
+    //
+    //     public Pixel from() {
+    //         return v;
+    //     }
+    //
+    //     public Pixel to() {
+    //         return w;
+    //     }
+    // }
+    //
+    // class PixelGraph {
+    //     private Bag<PixelEdge>[] adj;    // adj[v] = adjacency list for vertex v
+    //
+    //     public PixelGraph() {
+    //
+    //     }
+    //
+    //     public void addEdge(PixelEdge e) {
+    //         adj[e.from()].add(e.to());
+    //     }
+    // }
 
     private void addPixel(int x, int y, ArrayList<Pixel> vertices, ArrayList<Pixel> edgeTo,
                           ArrayList<Double> energyTo) {
@@ -95,27 +92,15 @@ public class SeamCarver {
 
     // traverse pixels in topological order
     public void traverseDownFromPixel(int x, int y) {
-        boolean debug = false;
+        boolean debug = true;
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
-
-        // int numVertices = 0;
-        // for (int i = 0; i < height(); i++) {
-        //     int curVal = Math.min(2 * i + 1, width());
-        //     numVertices += curVal;
-        //     StdOut.println(curVal);
-        // }
-        // StdOut.println(numVertices);
-
 
         ArrayList<Pixel> vertices = new ArrayList<Pixel>();
         ArrayList<Pixel> edgeTo = new ArrayList<Pixel>();
         ArrayList<Double> energyTo = new ArrayList<Double>();
-        EdgeWeightedDigraph G = new EdgeWeightedDigraph(0);
-
 
         addPixel(x, y, vertices, edgeTo, energyTo);
-        Edge curEdge = new Edge()
 
         for (int i = y + 1; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
