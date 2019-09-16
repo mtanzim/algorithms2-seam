@@ -89,6 +89,27 @@ public class SeamCarver {
         }
     }
 
+    private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel[][] pixelTo) {
+        if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2,y2)) {
+            energyTo[x2][y2] = energyTo[x1][y1] + energy(x2,y2);
+            pixelTo[x2][y2] = new Pixel(x1,y1, energy(x1,y1));
+        }
+    }
+
+    private void travesePixel(int x, int y, double energyTo[][], Pixel pixelTo[][]) {
+        boolean debug = false;
+
+        // StdOut.println("Currently at x: " + x + " y: " + y);
+        if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
+        for (int i = -1; i < 2; i++) {
+            if (x + i < 0 || x + i > width() - 1) continue;
+            relax(x,y,x+i, i+1, energyTo, pixelTo);
+        //    from: x,y
+        //    to: x-1,y+1;x,y+1; x+1, y+1
+
+        }
+    }
+
 
     // traverse pixels in topological order
     public void traverseDownFromPixel(int x, int y) {
@@ -96,29 +117,21 @@ public class SeamCarver {
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
 
-        ArrayList<Pixel> vertices = new ArrayList<Pixel>();
-        ArrayList<Pixel> edgeTo = new ArrayList<Pixel>();
-        ArrayList<Double> energyTo = new ArrayList<Double>();
-
-        addPixel(x, y, vertices, edgeTo, energyTo);
+        double energyTo[][] = new double[width()][height()];
+        Pixel pixelTo[][] = new Pixel[width()][height()];
+        for (int i =0; i < height()-1; i++) {
+            for (int k=0; k < width()-1; k++) {
+                energyTo[i][k]= Double.POSITIVE_INFINITY;
+            }
+        }
 
         for (int i = y + 1; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
                 if (k < 0 || k > width() - 1) continue;
-                addPixel(k, i, vertices, edgeTo, energyTo);
+                travesePixel(k,i,energyTo,pixelTo);
             }
         }
 
-        //travers in topological order
-        for (int i = 0; i < vertices.size(); i++) {
-            if (debug) {
-                StdOut.println("pixel " + vertices.get(i).toString());
-                StdOut.println("edgeTo " + edgeTo.get(i).toString());
-                StdOut.println("energyTo " + energyTo.get(i).toString());
-                StdOut.println("");
-            }
-
-        }
     }
 
     // energy of pixel at column x and row y
