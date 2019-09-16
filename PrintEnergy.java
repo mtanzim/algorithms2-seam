@@ -28,7 +28,11 @@ public class PrintEnergy {
             StdOut.println();
         }
 
-        sc.traverseDownFromPixel(3,0);
+        for (int i = 0; i < sc.width(); i++) {
+            StdOut.println();
+            sc.traverseDownFromPixel(i,0);
+
+        }
     }
 
 }

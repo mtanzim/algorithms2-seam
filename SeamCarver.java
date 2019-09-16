@@ -12,7 +12,6 @@ import java.awt.Color;
 public class SeamCarver {
     Picture picture;
     double energyArray[][];
-    // private boolean marked[][];
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -29,71 +28,23 @@ public class SeamCarver {
     class Pixel {
         int x;
         int y;
-        double energy;
 
-        public Pixel(int x, int y, double energy) {
+        public Pixel(int x, int y) {
             this.x = x;
             this.y = y;
-            this.energy = energy;
         }
 
         public String toString() {
-            return "x: " + x + " y: " + y + " energy: " + energy;
+            return x+","+y;
         }
     }
 
-    // class PixelEdge {
-    //     private final Pixel v;
-    //     private final Pixel w;
-    //     private final double weight;
-    //
-    //     public PixelEdge(Pixel v, Pixel w, double weight) {
-    //         this.v = v;
-    //         this.w = w;
-    //         this.weight = weight;
-    //     }
-    //
-    //     public Pixel from() {
-    //         return v;
-    //     }
-    //
-    //     public Pixel to() {
-    //         return w;
-    //     }
-    // }
-    //
-    // class PixelGraph {
-    //     private Bag<PixelEdge>[] adj;    // adj[v] = adjacency list for vertex v
-    //
-    //     public PixelGraph() {
-    //
-    //     }
-    //
-    //     public void addEdge(PixelEdge e) {
-    //         adj[e.from()].add(e.to());
-    //     }
-    // }
-
-    // private void addPixel(int x, int y, ArrayList<Pixel> vertices, ArrayList<Pixel> edgeTo,
-    //                       ArrayList<Double> energyTo) {
-    //     boolean debug = false;
-    //
-    //     // StdOut.println("Currently at x: " + x + " y: " + y);
-    //     if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
-    //     for (int i = -1; i < 2; i++) {
-    //         if (x + i < 0 || x + i > width() - 1) continue;
-    //         vertices.add(new Pixel(x, y, energy(x, y)));
-    //         edgeTo.add(new Pixel(x + i, y + 1, energy(x + i, y + 1)));
-    //         energyTo.add(energy(x + i, y + 1));
-    //     }
-    // }
-
     private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel pixelTo[][]) {
         boolean debug = false;
-        if (debug) StdOut.println("Relaxing edge to " + (new Pixel(x2,y2, energy(x2,y2)).toString()));
+        if (debug) StdOut.println("Relaxing edge to " + (new Pixel(x2,y2).toString()));
         if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2,y2)) {
             energyTo[x2][y2] = energyTo[x1][y1] + energy(x2,y2);
-            pixelTo[x2][y2] = new Pixel(x1,y1, energy(x1,y1));
+            pixelTo[x2][y2] = new Pixel(x1,y1);
         }
     }
 
@@ -102,7 +53,7 @@ public class SeamCarver {
         boolean debug = false;
 
         // StdOut.println("Currently at x: " + x + " y: " + y);
-        if (debug) StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
+        if (debug) StdOut.println("Currently at: " + new Pixel(x, y));
         for (int i = -1; i < 2; i++) {
             if (x + i < 0 || x + i > width() - 1) continue;
             relax(x,y,x+i, y+1, energyTo, pixelTo);
@@ -125,6 +76,7 @@ public class SeamCarver {
             }
         }
         energyTo[x][y] = 0;
+        pixelTo[x][y] = new Pixel(-1,-1);
 
         for (int i = y; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
@@ -132,12 +84,45 @@ public class SeamCarver {
                 travesePixel(k,i,energyTo,pixelTo);
             }
         }
+        //    - traverse up using
+        //    algo for finding shortest path:
+        //    - find min of last row
 
-        for (int row = 0; row < height(); row++) {
-            for (int col = 0; col < width(); col++)
-                StdOut.printf("%9.2f ", energyTo[col][row]);
-            StdOut.println();
+        double minTotalEnergy = energyTo[0][height()-1];
+        Pixel bottomPixel = new Pixel(0,height()-1);
+
+        for (int i = 1; i < width(); i++) {
+            if (minTotalEnergy > energyTo[i][height()-1]) {
+                minTotalEnergy = energyTo[i][height()-1];
+                bottomPixel = new Pixel(i,height() - 1);
+            }
         }
+
+        if (debug) {
+            for (int row = 0; row < height(); row++) {
+                for (int col = 0; col < width(); col++)
+                    StdOut.printf("%9.2f ", energyTo[col][row]);
+                StdOut.println();
+            }
+            StdOut.println();
+            for (int row = 0; row < height(); row++) {
+                for (int col = 0; col < width(); col++) {
+                    if (pixelTo[col][row] == null) {
+
+                        StdOut.printf("%9s", "BLK");
+                        continue;
+                    }
+                    StdOut.printf("%9s", pixelTo[col][row].toString());
+                }
+                StdOut.println();
+            }
+            StdOut.println();
+            StdOut.println("bottom pixel: " + bottomPixel.toString());
+
+        }
+
+
+
 
     }
 
