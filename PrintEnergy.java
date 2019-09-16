@@ -27,12 +27,13 @@ public class PrintEnergy {
                 StdOut.printf("%9.2f ", sc.energy(col, row));
             StdOut.println();
         }
+        sc.findVerticalSeam();
 
-        for (int i = 0; i < sc.width(); i++) {
-            StdOut.println();
-            sc.traverseDownFromPixel(i,0);
-
-        }
+        // for (int i = 0; i < sc.width(); i++) {
+        //     StdOut.println();
+        //     sc.traverseDownFromPixel(i,0);
+        //
+        // }
     }
 
 }

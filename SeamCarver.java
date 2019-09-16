@@ -8,6 +8,7 @@ import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.awt.Color;
+import java.util.Arrays;
 
 public class SeamCarver {
     Picture picture;
@@ -63,7 +64,7 @@ public class SeamCarver {
 
 
     // traverse pixels in topological order
-    public void traverseDownFromPixel(int x, int y) {
+    private void traverseDownFromPixel(int x, int y) {
         boolean debug = true;
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
@@ -75,6 +76,7 @@ public class SeamCarver {
                 energyTo[k][i]= Double.POSITIVE_INFINITY;
             }
         }
+        // starting point
         energyTo[x][y] = 0;
         pixelTo[x][y] = new Pixel(-1,-1);
 
@@ -84,9 +86,9 @@ public class SeamCarver {
                 travesePixel(k,i,energyTo,pixelTo);
             }
         }
-        //    - traverse up using
         //    algo for finding shortest path:
         //    - find min of last row
+        //    - traverse up using min bottom pixel
 
         double minTotalEnergy = energyTo[0][height()-1];
         Pixel bottomPixel = new Pixel(0,height()-1);
@@ -97,6 +99,18 @@ public class SeamCarver {
                 bottomPixel = new Pixel(i,height() - 1);
             }
         }
+
+        // now traverse up the chain
+        int [] path = new int[height()];
+        Pixel curPixel = bottomPixel;
+        int tracker = height() -1;
+        while (curPixel.x != -1) {
+            path[tracker] = curPixel.x;
+            curPixel = pixelTo[curPixel.x][curPixel.y];
+            tracker --;
+        }
+
+
 
         if (debug) {
             for (int row = 0; row < height(); row++) {
@@ -118,6 +132,8 @@ public class SeamCarver {
             }
             StdOut.println();
             StdOut.println("bottom pixel: " + bottomPixel.toString());
+            StdOut.println("min total energy: " + minTotalEnergy);
+            StdOut.println("path: " + Arrays.toString(path) );
 
         }
 
@@ -183,6 +199,11 @@ public class SeamCarver {
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
+        for (int i = 0; i < width(); i++) {
+            StdOut.println();
+            traverseDownFromPixel(i,0);
+
+        }
         return new int[] { 0, 0 };
 
     }

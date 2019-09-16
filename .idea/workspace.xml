@@ -125,7 +125,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/SeamCarver.java</url>
-          <line>44</line>
+          <line>45</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>
