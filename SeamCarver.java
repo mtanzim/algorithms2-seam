@@ -12,7 +12,7 @@ import java.awt.Color;
 public class SeamCarver {
     Picture picture;
     double energyArray[][];
-    private boolean marked[][];
+    // private boolean marked[][];
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -26,19 +26,15 @@ public class SeamCarver {
 
     }
 
-    private void traverseDown(int x, int y) {
-        if (y == height()   || x == width()  || x < 0 || marked[x][y]) return;
-        StdOut.println("Currently at x: " + x + " y: " + y + " energy: " + energy(x,y));
-        marked[x][y] = true;
-        traverseDown(x-1,y+1);
-        traverseDown(x,y+1);
-        traverseDown(x+1,y+1);
-    }
-
     public void traverseDownFromPixel(int x, int y) {
-        if (y < 0) throw new IllegalArgumentException("Not allowed to pass in y < 0");
-        this.marked = new boolean[width()][height()];
-        traverseDown(x,y);
+        if (x < 0 || x > width() || y < 0 || y > height())
+            throw new IllegalArgumentException("invalid starting index");
+        for (int i = y + 1; i < height() - 1; i++) {
+            for (int k = x - i; k < width() - 1; k++) {
+                if (k < 0) continue;
+                StdOut.println("Currently at x: " + k + " y: " + i + " energy: " + energy(k, i));
+            }
+        }
     }
 
     // energy of pixel at column x and row y
