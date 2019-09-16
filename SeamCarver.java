@@ -8,6 +8,7 @@ import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 public class SeamCarver {
     Picture picture;
@@ -26,14 +27,59 @@ public class SeamCarver {
 
     }
 
+    class Pixel {
+        int x;
+        int y;
+        double energy;
+
+        public Pixel(int x, int y, double energy) {
+            this.x = x;
+            this.y = y;
+            this.energy = energy;
+        }
+
+        public String toString() {
+            return "x: " + x + " y: " + y + " energy: " + energy;
+        }
+    }
+
+    private void addPixel(int x, int y, ArrayList<Pixel> vertices, ArrayList<Pixel> edgeTo,
+                          ArrayList<Double> energyTo) {
+
+        // StdOut.println("Currently at x: " + x + " y: " + y);
+        StdOut.println("Currently at: " + new Pixel(x, y, energy(x, y)));
+        for (int i = -1; i < 2; i++) {
+            if (x + i < 0 || x + i > width() - 1) continue;
+            vertices.add(new Pixel(x, y, energy(x, y)));
+            edgeTo.add(new Pixel(x + i, y + 1, energy(x + i, y + 1)));
+            energyTo.add(energy(x + i, y + 1));
+        }
+    }
+
+
+    // traverse pixels in topological order
     public void traverseDownFromPixel(int x, int y) {
+
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
+
+        ArrayList<Pixel> vertices = new ArrayList<Pixel>();
+        ArrayList<Pixel> edgeTo = new ArrayList<Pixel>();
+        ArrayList<Double> energyTo = new ArrayList<Double>();
+
+        addPixel(x, y, vertices, edgeTo, energyTo);
+
         for (int i = y + 1; i < height() - 1; i++) {
-            for (int k = x - i; k < width() - 1; k++) {
-                if (k < 0) continue;
-                StdOut.println("Currently at x: " + k + " y: " + i + " energy: " + energy(k, i));
+            for (int k = x - i; k <= x + i; k++) {
+                if (k < 0 || k > width() - 1) continue;
+                addPixel(k, i, vertices, edgeTo, energyTo);
             }
+        }
+        for (int i = 0; i < vertices.size(); i++) {
+            StdOut.println("pixel " + vertices.get(i).toString());
+            StdOut.println("edgeTo " + edgeTo.get(i).toString());
+            StdOut.println("energyTo " + energyTo.get(i).toString());
+            StdOut.println("");
         }
     }
 
