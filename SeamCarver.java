@@ -12,10 +12,10 @@ import java.awt.Color;
 import java.util.Arrays;
 
 public class SeamCarver {
-    Picture picture;
-    private double energyArray[][];
-    private double energyArrayTransposed[][];
     static final int START_INDICATOR = -1;
+    Picture picture;
+    private double[][] energyArray;
+    private double[][] energyArrayTransposed;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -61,8 +61,7 @@ public class SeamCarver {
         }
     }
 
-    private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double energyTo[][],
-                       Pixel pixelTo[][]) {
+    private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double[][] energyTo, Pixel[][] pixelTo) {
         boolean debug = false;
         if (debug)
             StdOut.println("Relaxing edge to " + (new Pixel(x2, y2).toString()));
@@ -88,8 +87,8 @@ public class SeamCarver {
         if (x < 0 || x > localWidth || y < 0 || y > localHeight)
             throw new IllegalArgumentException("invalid starting index");
 
-        double energyTo[][] = new double[localWidth][localHeight];
-        Pixel pixelTo[][] = new Pixel[localWidth][localHeight];
+        double[][] energyTo = new double[localWidth][localHeight];
+        Pixel[][] pixelTo = new Pixel[localWidth][localHeight];
 
         for (int i = 0; i < localHeight; i++) {
             for (int k = 0; k < localWidth; k++) {
@@ -100,16 +99,15 @@ public class SeamCarver {
         energyTo[x][y] = 0.0;
         pixelTo[x][y] = new Pixel(START_INDICATOR, START_INDICATOR);
 
-
         for (int i = y; i < localHeight - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
                 if (k < 0 || k > localWidth - 1)
                     continue;
                 // relax adjacent pixels
-                for (int l = -1; l < 2; l++) {
-                    if (k + l < 0 || k + l > localWidth - 1)
+                for (int m = -1; m < 2; m++) {
+                    if (k + m < 0 || k + m > localWidth - 1)
                         continue;
-                    relax(k, i, k + l, i + 1, localEnergy, energyTo, pixelTo);
+                    relax(k, i, k + m, i + 1, localEnergy, energyTo, pixelTo);
                 }
             }
         }
