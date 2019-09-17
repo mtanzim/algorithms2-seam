@@ -12,8 +12,8 @@ import java.awt.Color;
 import java.util.Arrays;
 
 public class SeamCarver {
-    static final int START_INDICATOR = -1;
-    Picture picture;
+    private Picture picture;
+    private final int START_INDICATOR = -1;
     private double[][] energyArray;
     private double[][] energyArrayTransposed;
 
@@ -40,7 +40,7 @@ public class SeamCarver {
         }
     }
 
-    class Pixel {
+    private class Pixel {
         int x;
         int y;
 
@@ -54,7 +54,7 @@ public class SeamCarver {
         }
     }
 
-    class SPNode implements Comparable<SPNode> {
+    private class SPNode implements Comparable<SPNode> {
         double energy;
         int[] path;
 
