@@ -25,7 +25,7 @@ public class SeamCarver {
 
     private void calculateEnergy(){
         Stopwatch sw = new Stopwatch();
-        boolean debug = true;
+        boolean debug = false;
         this.energyArray = new double[width()][height()];
         this.energyArrayTransposed = new double[height()][width()];
         for (int row = 0; row < height(); row++) {
@@ -236,15 +236,8 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        boolean debug = true;
+        boolean debug = false;
         Stopwatch sw = new Stopwatch();
-
-        // MinPQ<SPNode> mpq = new MinPQ<SPNode>();
-        // for (int i = 0; i < height(); i++) {
-        //     mpq.insert(traverseDownFromPixel(i, 0, true));
-        //
-        // }
-        // int[] sp = mpq.delMin().path;
         int[] sp = traverseDownFromPixel(true);
         if (debug) {
             // StdOut.println(Arrays.toString(sp));
@@ -255,15 +248,9 @@ public class SeamCarver {
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
-        boolean debug = true;
+        boolean debug = false;
 
         Stopwatch sw = new Stopwatch();
-        // MinPQ<SPNode> mpq = new MinPQ<SPNode>();
-        // for (int i = 0; i < width(); i++) {
-        //     mpq.insert(traverseDownFromPixel(i, 0, false));
-        //
-        // }
-        // int[] sp = mpq.delMin().path;
         int[] sp = traverseDownFromPixel(false);
 
         if (debug) {
@@ -276,6 +263,24 @@ public class SeamCarver {
 
     // remove horizontal seam from current picture
     public void removeHorizontalSeam(int[] seam) {
+        boolean debug = false;
+        Stopwatch sw = new Stopwatch();
+        Picture newPic = new Picture(width(), height()-1);
+        for (int i = 0; i < width(); i++) {
+            int adder = 0;
+            for (int k = 0; k < height(); k++) {
+                if (k == seam[i]) {
+                    adder = 1;
+                    continue;
+                }
+                newPic.setRGB(i, k-adder, picture.getRGB(i, k));
+            }
+        }
+        this.picture = newPic;
+        calculateEnergy();
+        if (debug) {
+            StdOut.println("Seam removal time: " + sw.elapsedTime() + " seconds.");
+        }
     }
 
     public void removeVerticalSeam(int[] seam) {
@@ -293,6 +298,7 @@ public class SeamCarver {
             }
         }
         this.picture = newPic;
+        calculateEnergy();
         if (debug) {
             StdOut.println("Seam removal time: " + sw.elapsedTime() + " seconds.");
         }
