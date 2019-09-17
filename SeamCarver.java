@@ -4,7 +4,6 @@
  *  Description: Entry for Seam
  **************************************************************************** */
 
-import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.Stopwatch;
@@ -82,7 +81,8 @@ public class SeamCarver {
 
     // traverse pixels in topological order, and visit all of its
     // adjancent(connected) pixels
-    private SPNode traverseDownFromPixel(int x, int y, boolean isTransposed) {
+    // private int[] traverseDownFromPixel(int x, int y, boolean isTransposed) {
+    private int[] traverseDownFromPixel(boolean isTransposed) {
         boolean debug = false;
         double[][] localEnergy = energyArray;
         int localWidth = width();
@@ -93,8 +93,8 @@ public class SeamCarver {
             localHeight = width();
             localWidth = height();
         }
-        if (x < 0 || x > localWidth || y < 0 || y > localHeight)
-            throw new IllegalArgumentException("invalid starting index");
+        // if (x < 0 || x > localWidth || y < 0 || y > localHeight)
+        //     throw new IllegalArgumentException("invalid starting index");
 
         double[][] energyTo = new double[localWidth][localHeight];
         Pixel[][] pixelTo = new Pixel[localWidth][localHeight];
@@ -104,12 +104,24 @@ public class SeamCarver {
                 energyTo[k][i] = Double.POSITIVE_INFINITY;
             }
         }
-        // starting point
-        energyTo[x][y] = 0.0;
-        pixelTo[x][y] = new Pixel(START_INDICATOR, START_INDICATOR);
 
-        for (int i = y; i < localHeight - 1; i++) {
-            for (int k = x - i; k <= x + i; k++) {
+        // find starting point
+        double minStartEnergy = energyTo[0][1];
+        int startX = 0;
+        for (int i = 1; i < localWidth; i++) {
+            if (minStartEnergy > energyArray[i][1]) {
+                minStartEnergy = energyArray[i][1];
+                startX = i;
+            }
+        }
+        if (debug) StdOut.println("Start x is: " + startX );
+
+        // starting point
+        energyTo[startX][0] = 0.0;
+        pixelTo[startX][0] = new Pixel(START_INDICATOR, START_INDICATOR);
+
+        for (int i = 0; i < localHeight - 1; i++) {
+            for (int k = startX - i; k <= startX + i; k++) {
                 if (k < 0 || k > localWidth - 1)
                     continue;
                 // relax adjacent pixels
@@ -168,8 +180,8 @@ public class SeamCarver {
 
         }
 
-        return new SPNode(minTotalEnergy, path);
-
+        // return new SPNode(minTotalEnergy, path);
+        return path;
     }
 
     // energy of pixel at column x and row y
@@ -227,12 +239,13 @@ public class SeamCarver {
         boolean debug = true;
         Stopwatch sw = new Stopwatch();
 
-        MinPQ<SPNode> mpq = new MinPQ<SPNode>();
-        for (int i = 0; i < height(); i++) {
-            mpq.insert(traverseDownFromPixel(i, 0, true));
-
-        }
-        int[] sp = mpq.delMin().path;
+        // MinPQ<SPNode> mpq = new MinPQ<SPNode>();
+        // for (int i = 0; i < height(); i++) {
+        //     mpq.insert(traverseDownFromPixel(i, 0, true));
+        //
+        // }
+        // int[] sp = mpq.delMin().path;
+        int[] sp = traverseDownFromPixel(true);
         if (debug) {
             // StdOut.println(Arrays.toString(sp));
             StdOut.println("Horizontal seam finding time: " + sw.elapsedTime() + " seconds.");
@@ -245,12 +258,14 @@ public class SeamCarver {
         boolean debug = true;
 
         Stopwatch sw = new Stopwatch();
-        MinPQ<SPNode> mpq = new MinPQ<SPNode>();
-        for (int i = 0; i < width(); i++) {
-            mpq.insert(traverseDownFromPixel(i, 0, false));
+        // MinPQ<SPNode> mpq = new MinPQ<SPNode>();
+        // for (int i = 0; i < width(); i++) {
+        //     mpq.insert(traverseDownFromPixel(i, 0, false));
+        //
+        // }
+        // int[] sp = mpq.delMin().path;
+        int[] sp = traverseDownFromPixel(false);
 
-        }
-        int[] sp = mpq.delMin().path;
         if (debug) {
             // StdOut.println(Arrays.toString(sp));
             StdOut.println("Vertical seam finding time: " + sw.elapsedTime() + " seconds.");

@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="c1e4f978-b3bd-4ae1-84e9-9e1170bce808" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrintEnergy.java" beforeDir="false" afterPath="$PROJECT_DIR$/PrintEnergy.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PrintSeams.java" beforeDir="false" afterPath="$PROJECT_DIR$/PrintSeams.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SeamCarver.java" beforeDir="false" afterPath="$PROJECT_DIR$/SeamCarver.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,6 +60,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RunDashboard">
@@ -89,7 +88,7 @@
     <configuration name="PrintSeams" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintSeams" />
       <module name="Algorithms, Part II" />
-      <option name="PROGRAM_PARAMETERS" value="chameleon.png" />
+      <option name="PROGRAM_PARAMETERS" value="6x5.png" />
       <option name="VM_PARAMETERS" value="-ea" />
       <method v="2">
         <option name="Make" enabled="true" />
