@@ -70,6 +70,7 @@ public class PrintSeams {
 
         SeamCarver carver = new SeamCarver(picture);
 
+
         StdOut.printf("Vertical seam: { ");
         int[] verticalSeam = carver.findVerticalSeam();
         for (int x : verticalSeam)

@@ -11,6 +11,7 @@
 
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stopwatch;
 
 import java.util.Arrays;
 
@@ -30,7 +31,10 @@ public class PrintEnergy {
                 StdOut.printf("%9.2f ", sc.energy(col, row));
             StdOut.println();
         }
+        Stopwatch sw = new Stopwatch();
         int[] sp = sc.findVerticalSeam();
+        StdOut.println("Seam finding time: " + sw.elapsedTime() + " seconds.");
+
         StdOut.println("SHORTEST SEAM: ");
         StdOut.println(Arrays.toString(sp));
 

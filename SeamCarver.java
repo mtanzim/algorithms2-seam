@@ -7,6 +7,7 @@
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.Stopwatch;
 
 import java.awt.Color;
 import java.util.Arrays;
@@ -20,6 +21,12 @@ public class SeamCarver {
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
         this.picture = picture;
+        calculateEnergy();
+    }
+
+    private void calculateEnergy(){
+        Stopwatch sw = new Stopwatch();
+        boolean debug = true;
         this.energyArray = new double[width()][height()];
         this.energyArrayTransposed = new double[height()][width()];
         for (int row = 0; row < height(); row++) {
@@ -29,7 +36,9 @@ public class SeamCarver {
                 energyArrayTransposed[row][col] = curEnergy;
             }
         }
-
+        if (debug) {
+            StdOut.println("Energy calculation time: " + sw.elapsedTime() + " seconds.");
+        }
     }
 
     class Pixel {
@@ -215,29 +224,37 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        boolean debug = false;
+        boolean debug = true;
+        Stopwatch sw = new Stopwatch();
+
         MinPQ<SPNode> mpq = new MinPQ<SPNode>();
         for (int i = 0; i < height(); i++) {
             mpq.insert(traverseDownFromPixel(i, 0, true));
 
         }
         int[] sp = mpq.delMin().path;
-        if (debug)
-            StdOut.println(Arrays.toString(sp));
+        if (debug) {
+            // StdOut.println(Arrays.toString(sp));
+            StdOut.println("Horizontal seam finding time: " + sw.elapsedTime() + " seconds.");
+        }
         return sp;
     }
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
-        boolean debug = false;
+        boolean debug = true;
+
+        Stopwatch sw = new Stopwatch();
         MinPQ<SPNode> mpq = new MinPQ<SPNode>();
         for (int i = 0; i < width(); i++) {
             mpq.insert(traverseDownFromPixel(i, 0, false));
 
         }
         int[] sp = mpq.delMin().path;
-        if (debug)
-            StdOut.println(Arrays.toString(sp));
+        if (debug) {
+            // StdOut.println(Arrays.toString(sp));
+            StdOut.println("Vertical seam finding time: " + sw.elapsedTime() + " seconds.");
+        }
         return sp;
 
     }
@@ -247,6 +264,8 @@ public class SeamCarver {
     }
 
     public void removeVerticalSeam(int[] seam) {
+        boolean debug = false;
+        Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width() - 1, height());
         for (int i = 0; i < height(); i++) {
             int adder = 0;
@@ -259,6 +278,9 @@ public class SeamCarver {
             }
         }
         this.picture = newPic;
+        if (debug) {
+            StdOut.println("Seam removal time: " + sw.elapsedTime() + " seconds.");
+        }
     }
 
     // remove vertical seam from current picture
