@@ -61,63 +61,75 @@ public class SeamCarver {
         }
     }
 
-    private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel pixelTo[][]) {
+    private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double energyTo[][],
+                       Pixel pixelTo[][]) {
         boolean debug = false;
         if (debug)
             StdOut.println("Relaxing edge to " + (new Pixel(x2, y2).toString()));
-        if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2, y2)) {
-            energyTo[x2][y2] = energyTo[x1][y1] + energy(x2, y2);
+        if (energyTo[x2][y2] > energyTo[x1][y1] + localEnergy[x2][y2]) {
+            energyTo[x2][y2] = energyTo[x1][y1] + localEnergy[x2][y2];
             pixelTo[x2][y2] = new Pixel(x1, y1);
         }
     }
 
     // traverse pixels in topological order, and visit all of its
     // adjancent(connected) pixels
-    private SPNode traverseDownFromPixel(int x, int y) {
+    private SPNode traverseDownFromPixel(int x, int y, boolean isTransposed) {
         boolean debug = false;
-        if (x < 0 || x > width() || y < 0 || y > height())
+        double[][] localEnergy = energyArray;
+        int localWidth = width();
+        int localHeight = height();
+
+        if (isTransposed) {
+            localEnergy = energyArrayTransposed;
+            localHeight = width();
+            localWidth = height();
+        }
+        if (x < 0 || x > localWidth || y < 0 || y > localHeight)
             throw new IllegalArgumentException("invalid starting index");
-        // initialize energyTo
-        double energyTo[][] = new double[width()][height()];
-        Pixel pixelTo[][] = new Pixel[width()][height()];
-        for (int i = 0; i < height(); i++) {
-            for (int k = 0; k < width(); k++) {
+
+        double energyTo[][] = new double[localWidth][localHeight];
+        Pixel pixelTo[][] = new Pixel[localWidth][localHeight];
+
+        for (int i = 0; i < localHeight; i++) {
+            for (int k = 0; k < localWidth; k++) {
                 energyTo[k][i] = Double.POSITIVE_INFINITY;
             }
         }
         // starting point
         energyTo[x][y] = 0.0;
-        pixelTo[x][y] = new Pixel(-1, -1);
+        pixelTo[x][y] = new Pixel(START_INDICATOR, START_INDICATOR);
 
-        for (int i = y; i < height() - 1; i++) {
+
+        for (int i = y; i < localHeight - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
-                if (k < 0 || k > width() - 1)
+                if (k < 0 || k > localWidth - 1)
                     continue;
                 // relax adjacent pixels
                 for (int l = -1; l < 2; l++) {
-                    if (k + l < 0 || k + l > width() - 1)
+                    if (k + l < 0 || k + l > localWidth - 1)
                         continue;
-                    relax(k, i, k + l, i + 1, energyTo, pixelTo);
+                    relax(k, i, k + l, i + 1, localEnergy, energyTo, pixelTo);
                 }
             }
         }
         // algo for finding shortest path:
         // - find min of last row
         // - traverse up using min bottom pixel
-        double minTotalEnergy = energyTo[0][height() - 1];
-        Pixel bottomPixel = new Pixel(0, height() - 1);
+        double minTotalEnergy = energyTo[0][localHeight - 1];
+        Pixel bottomPixel = new Pixel(0, localHeight - 1);
 
-        for (int i = 1; i < width(); i++) {
-            if (minTotalEnergy > energyTo[i][height() - 1]) {
-                minTotalEnergy = energyTo[i][height() - 1];
-                bottomPixel = new Pixel(i, height() - 1);
+        for (int i = 1; i < localWidth; i++) {
+            if (minTotalEnergy > energyTo[i][localHeight - 1]) {
+                minTotalEnergy = energyTo[i][localHeight - 1];
+                bottomPixel = new Pixel(i, localHeight - 1);
             }
         }
 
         // now traverse up the chain
-        int[] path = new int[height()];
+        int[] path = new int[localHeight];
         Pixel curPixel = bottomPixel;
-        int tracker = height() - 1;
+        int tracker = localHeight - 1;
         while (curPixel.x != START_INDICATOR) {
             path[tracker] = curPixel.x;
             curPixel = pixelTo[curPixel.x][curPixel.y];
@@ -125,14 +137,14 @@ public class SeamCarver {
         }
 
         if (debug) {
-            for (int row = 0; row < height(); row++) {
-                for (int col = 0; col < width(); col++)
+            for (int row = 0; row < localHeight; row++) {
+                for (int col = 0; col < localWidth; col++)
                     StdOut.printf("%9.2f ", energyTo[col][row]);
                 StdOut.println();
             }
             StdOut.println();
-            for (int row = 0; row < height(); row++) {
-                for (int col = 0; col < width(); col++) {
+            for (int row = 0; row < localHeight; row++) {
+                for (int col = 0; col < localWidth; col++) {
                     if (pixelTo[col][row] == null) {
 
                         StdOut.printf("%9s", "BLK");
@@ -205,7 +217,16 @@ public class SeamCarver {
 
     // sequence of indices for horizontal seam
     public int[] findHorizontalSeam() {
-        return new int[] { 0, 0 };
+        boolean debug = false;
+        MinPQ<SPNode> mpq = new MinPQ<SPNode>();
+        for (int i = 0; i < height(); i++) {
+            mpq.insert(traverseDownFromPixel(i, 0, true));
+
+        }
+        int[] sp = mpq.delMin().path;
+        if (debug)
+            StdOut.println(Arrays.toString(sp));
+        return sp;
     }
 
     // sequence of indices for vertical seam
@@ -213,7 +234,7 @@ public class SeamCarver {
         boolean debug = false;
         MinPQ<SPNode> mpq = new MinPQ<SPNode>();
         for (int i = 0; i < width(); i++) {
-            mpq.insert(traverseDownFromPixel(i, 0));
+            mpq.insert(traverseDownFromPixel(i, 0, false));
 
         }
         int[] sp = mpq.delMin().path;
