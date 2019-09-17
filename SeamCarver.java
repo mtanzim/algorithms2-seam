@@ -244,11 +244,21 @@ public class SeamCarver {
 
     // remove horizontal seam from current picture
     public void removeHorizontalSeam(int[] seam) {
-
     }
 
     public void removeVerticalSeam(int[] seam) {
-
+        Picture newPic = new Picture(width() - 1, height());
+        for (int i = 0; i < height(); i++) {
+            int adder = 0;
+            for (int k = 0; k < width(); k++) {
+                if (k == seam[i]) {
+                    adder = 1;
+                    continue;
+                }
+                newPic.setRGB(k - adder, i, picture.getRGB(k, i));
+            }
+        }
+        this.picture = newPic;
     }
 
     // remove vertical seam from current picture
