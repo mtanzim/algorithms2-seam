@@ -13,17 +13,20 @@ import java.util.Arrays;
 
 public class SeamCarver {
     Picture picture;
-    double energyArray[][];
+    private double energyArray[][];
+    private double energyArrayTransposed[][];
     static final int START_INDICATOR = -1;
-    static final double EPSILON = 0.0000001;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
         this.picture = picture;
         this.energyArray = new double[width()][height()];
+        this.energyArrayTransposed = new double[height()][width()];
         for (int row = 0; row < height(); row++) {
             for (int col = 0; col < width(); col++) {
-                energyArray[col][row] = calculateEnergy(col, row);
+                double curEnergy = calculateEnergy(col, row);
+                energyArray[col][row] = curEnergy;
+                energyArrayTransposed[row][col] = curEnergy;
             }
         }
 
@@ -55,9 +58,6 @@ public class SeamCarver {
         @Override
         public int compareTo(SPNode that) {
             return Double.compare(this.energy, that.energy);
-            // if (that.energy - this.energy < EPSILON) return 1;
-            // if (that.energy - this.energy > EPSILON) return -1;
-            // return 0;
         }
     }
 
@@ -74,7 +74,7 @@ public class SeamCarver {
     // traverse pixels in topological order, and visit all of its
     // adjancent(connected) pixels
     private SPNode traverseDownFromPixel(int x, int y) {
-        boolean debug = true;
+        boolean debug = false;
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
         // initialize energyTo
@@ -87,14 +87,13 @@ public class SeamCarver {
         }
         // starting point
         energyTo[x][y] = 0.0;
-        //
         pixelTo[x][y] = new Pixel(-1, -1);
 
         for (int i = y; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
                 if (k < 0 || k > width() - 1)
                     continue;
-                // travesePixel(k, i, energyTo, pixelTo);
+                // relax adjacent pixels
                 for (int l = -1; l < 2; l++) {
                     if (k + l < 0 || k + l > width() - 1)
                         continue;
@@ -105,7 +104,6 @@ public class SeamCarver {
         // algo for finding shortest path:
         // - find min of last row
         // - traverse up using min bottom pixel
-
         double minTotalEnergy = energyTo[0][height() - 1];
         Pixel bottomPixel = new Pixel(0, height() - 1);
 
@@ -212,10 +210,9 @@ public class SeamCarver {
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
-        boolean debug = true;
+        boolean debug = false;
         MinPQ<SPNode> mpq = new MinPQ<SPNode>();
         for (int i = 0; i < width(); i++) {
-            StdOut.println();
             mpq.insert(traverseDownFromPixel(i, 0));
 
         }
