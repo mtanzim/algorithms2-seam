@@ -12,11 +12,14 @@
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.Arrays;
+
 public class PrintEnergy {
 
     public static void main(String[] args) {
         Picture picture = new Picture(args[0]);
-        StdOut.printf("image is %d pixels wide by %d pixels high.\n", picture.width(), picture.height());
+        StdOut.printf("image is %d pixels wide by %d pixels high.\n", picture.width(),
+                      picture.height());
 
         SeamCarver sc = new SeamCarver(picture);
 
@@ -27,10 +30,11 @@ public class PrintEnergy {
                 StdOut.printf("%9.2f ", sc.energy(col, row));
             StdOut.println();
         }
-        sc.findVerticalSeam();
+        int[] sp = sc.findVerticalSeam();
+        StdOut.println("SHORTEST SEAM: ");
+        StdOut.println(Arrays.toString(sp));
 
         // for (int i = 0; i < sc.width(); i++) {
-        //     StdOut.println();
         //     sc.traverseDownFromPixel(i,0);
         //
         // }

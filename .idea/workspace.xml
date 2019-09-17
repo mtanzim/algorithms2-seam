@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="c1e4f978-b3bd-4ae1-84e9-9e1170bce808" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PrintEnergy.java" beforeDir="false" afterPath="$PROJECT_DIR$/PrintEnergy.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SeamCarver.java" beforeDir="false" afterPath="$PROJECT_DIR$/SeamCarver.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -124,7 +125,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/SeamCarver.java</url>
-          <line>45</line>
+          <line>66</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
       </breakpoints>

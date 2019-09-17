@@ -4,6 +4,7 @@
  *  Description: Entry for Seam
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.Picture;
 import edu.princeton.cs.algs4.StdOut;
 
@@ -13,6 +14,8 @@ import java.util.Arrays;
 public class SeamCarver {
     Picture picture;
     double energyArray[][];
+    static final int START_INDICATOR = -1;
+    static final double EPSILON = 0.0000001;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -40,6 +43,24 @@ public class SeamCarver {
         }
     }
 
+    class SPNode implements Comparable<SPNode> {
+        double energy;
+        int[] path;
+
+        public SPNode(double energy, int[] path) {
+            this.energy = energy;
+            this.path = path;
+        }
+
+        @Override
+        public int compareTo(SPNode that) {
+            return Double.compare(this.energy, that.energy);
+            // if (that.energy - this.energy < EPSILON) return 1;
+            // if (that.energy - this.energy > EPSILON) return -1;
+            // return 0;
+        }
+    }
+
     private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel pixelTo[][]) {
         boolean debug = false;
         if (debug)
@@ -50,27 +71,13 @@ public class SeamCarver {
         }
     }
 
-    // traverse and relax
-    // private void travesePixel(int x, int y, double energyTo[][], Pixel pixelTo[][]) {
-    //     boolean debug = false;
-    //
-    //     // StdOut.println("Currently at x: " + x + " y: " + y);
-    //     if (debug)
-    //         StdOut.println("Currently at: " + new Pixel(x, y));
-    //     for (int i = -1; i < 2; i++) {
-    //         if (x + i < 0 || x + i > width() - 1)
-    //             continue;
-    //         relax(x, y, x + i, y + 1, energyTo, pixelTo);
-    //
-    //     }
-    // }
-
-    // traverse pixels in topological order
-    private void traverseDownFromPixel(int x, int y) {
+    // traverse pixels in topological order, and visit all of its
+    // adjancent(connected) pixels
+    private SPNode traverseDownFromPixel(int x, int y) {
         boolean debug = true;
         if (x < 0 || x > width() || y < 0 || y > height())
             throw new IllegalArgumentException("invalid starting index");
-
+        // initialize energyTo
         double energyTo[][] = new double[width()][height()];
         Pixel pixelTo[][] = new Pixel[width()][height()];
         for (int i = 0; i < height(); i++) {
@@ -79,15 +86,18 @@ public class SeamCarver {
             }
         }
         // starting point
-        energyTo[x][y] = 0;
+        energyTo[x][y] = 0.0;
+        //
         pixelTo[x][y] = new Pixel(-1, -1);
 
         for (int i = y; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
-                if (k < 0 || k > width() - 1) continue;
+                if (k < 0 || k > width() - 1)
+                    continue;
                 // travesePixel(k, i, energyTo, pixelTo);
                 for (int l = -1; l < 2; l++) {
-                    if (k + l < 0 || k + l > width() - 1) continue;
+                    if (k + l < 0 || k + l > width() - 1)
+                        continue;
                     relax(k, i, k + l, i + 1, energyTo, pixelTo);
                 }
             }
@@ -110,7 +120,7 @@ public class SeamCarver {
         int[] path = new int[height()];
         Pixel curPixel = bottomPixel;
         int tracker = height() - 1;
-        while (curPixel.x != -1) {
+        while (curPixel.x != START_INDICATOR) {
             path[tracker] = curPixel.x;
             curPixel = pixelTo[curPixel.x][curPixel.y];
             tracker--;
@@ -140,6 +150,8 @@ public class SeamCarver {
             StdOut.println("path: " + Arrays.toString(path));
 
         }
+
+        return new SPNode(minTotalEnergy, path);
 
     }
 
@@ -200,12 +212,17 @@ public class SeamCarver {
 
     // sequence of indices for vertical seam
     public int[] findVerticalSeam() {
+        boolean debug = true;
+        MinPQ<SPNode> mpq = new MinPQ<SPNode>();
         for (int i = 0; i < width(); i++) {
             StdOut.println();
-            traverseDownFromPixel(i, 0);
+            mpq.insert(traverseDownFromPixel(i, 0));
 
         }
-        return new int[] { 0, 0 };
+        int[] sp = mpq.delMin().path;
+        if (debug)
+            StdOut.println(Arrays.toString(sp));
+        return sp;
 
     }
 
