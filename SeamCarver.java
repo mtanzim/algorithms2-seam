@@ -36,32 +36,34 @@ public class SeamCarver {
         }
 
         public String toString() {
-            return x+","+y;
+            return x + "," + y;
         }
     }
 
     private void relax(int x1, int y1, int x2, int y2, double energyTo[][], Pixel pixelTo[][]) {
         boolean debug = false;
-        if (debug) StdOut.println("Relaxing edge to " + (new Pixel(x2,y2).toString()));
-        if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2,y2)) {
-            energyTo[x2][y2] = energyTo[x1][y1] + energy(x2,y2);
-            pixelTo[x2][y2] = new Pixel(x1,y1);
+        if (debug)
+            StdOut.println("Relaxing edge to " + (new Pixel(x2, y2).toString()));
+        if (energyTo[x2][y2] > energyTo[x1][y1] + energy(x2, y2)) {
+            energyTo[x2][y2] = energyTo[x1][y1] + energy(x2, y2);
+            pixelTo[x2][y2] = new Pixel(x1, y1);
         }
     }
 
     // traverse and relax
-    private void travesePixel(int x, int y, double energyTo[][], Pixel pixelTo[][]) {
-        boolean debug = false;
-
-        // StdOut.println("Currently at x: " + x + " y: " + y);
-        if (debug) StdOut.println("Currently at: " + new Pixel(x, y));
-        for (int i = -1; i < 2; i++) {
-            if (x + i < 0 || x + i > width() - 1) continue;
-            relax(x,y,x+i, y+1, energyTo, pixelTo);
-
-        }
-    }
-
+    // private void travesePixel(int x, int y, double energyTo[][], Pixel pixelTo[][]) {
+    //     boolean debug = false;
+    //
+    //     // StdOut.println("Currently at x: " + x + " y: " + y);
+    //     if (debug)
+    //         StdOut.println("Currently at: " + new Pixel(x, y));
+    //     for (int i = -1; i < 2; i++) {
+    //         if (x + i < 0 || x + i > width() - 1)
+    //             continue;
+    //         relax(x, y, x + i, y + 1, energyTo, pixelTo);
+    //
+    //     }
+    // }
 
     // traverse pixels in topological order
     private void traverseDownFromPixel(int x, int y) {
@@ -71,46 +73,48 @@ public class SeamCarver {
 
         double energyTo[][] = new double[width()][height()];
         Pixel pixelTo[][] = new Pixel[width()][height()];
-        for (int i =0; i < height(); i++) {
-            for (int k=0; k < width(); k++) {
-                energyTo[k][i]= Double.POSITIVE_INFINITY;
+        for (int i = 0; i < height(); i++) {
+            for (int k = 0; k < width(); k++) {
+                energyTo[k][i] = Double.POSITIVE_INFINITY;
             }
         }
         // starting point
         energyTo[x][y] = 0;
-        pixelTo[x][y] = new Pixel(-1,-1);
+        pixelTo[x][y] = new Pixel(-1, -1);
 
         for (int i = y; i < height() - 1; i++) {
             for (int k = x - i; k <= x + i; k++) {
                 if (k < 0 || k > width() - 1) continue;
-                travesePixel(k,i,energyTo,pixelTo);
+                // travesePixel(k, i, energyTo, pixelTo);
+                for (int l = -1; l < 2; l++) {
+                    if (k + l < 0 || k + l > width() - 1) continue;
+                    relax(k, i, k + l, i + 1, energyTo, pixelTo);
+                }
             }
         }
-        //    algo for finding shortest path:
-        //    - find min of last row
-        //    - traverse up using min bottom pixel
+        // algo for finding shortest path:
+        // - find min of last row
+        // - traverse up using min bottom pixel
 
-        double minTotalEnergy = energyTo[0][height()-1];
-        Pixel bottomPixel = new Pixel(0,height()-1);
+        double minTotalEnergy = energyTo[0][height() - 1];
+        Pixel bottomPixel = new Pixel(0, height() - 1);
 
         for (int i = 1; i < width(); i++) {
-            if (minTotalEnergy > energyTo[i][height()-1]) {
-                minTotalEnergy = energyTo[i][height()-1];
-                bottomPixel = new Pixel(i,height() - 1);
+            if (minTotalEnergy > energyTo[i][height() - 1]) {
+                minTotalEnergy = energyTo[i][height() - 1];
+                bottomPixel = new Pixel(i, height() - 1);
             }
         }
 
         // now traverse up the chain
-        int [] path = new int[height()];
+        int[] path = new int[height()];
         Pixel curPixel = bottomPixel;
-        int tracker = height() -1;
+        int tracker = height() - 1;
         while (curPixel.x != -1) {
             path[tracker] = curPixel.x;
             curPixel = pixelTo[curPixel.x][curPixel.y];
-            tracker --;
+            tracker--;
         }
-
-
 
         if (debug) {
             for (int row = 0; row < height(); row++) {
@@ -133,12 +137,9 @@ public class SeamCarver {
             StdOut.println();
             StdOut.println("bottom pixel: " + bottomPixel.toString());
             StdOut.println("min total energy: " + minTotalEnergy);
-            StdOut.println("path: " + Arrays.toString(path) );
+            StdOut.println("path: " + Arrays.toString(path));
 
         }
-
-
-
 
     }
 
@@ -201,7 +202,7 @@ public class SeamCarver {
     public int[] findVerticalSeam() {
         for (int i = 0; i < width(); i++) {
             StdOut.println();
-            traverseDownFromPixel(i,0);
+            traverseDownFromPixel(i, 0);
 
         }
         return new int[] { 0, 0 };
