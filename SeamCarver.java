@@ -19,6 +19,7 @@ public class SeamCarver {
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
+        if (picture == null) throw new IllegalArgumentException("bad pic");
         this.picture = picture;
         calculateEnergy();
     }
@@ -54,20 +55,6 @@ public class SeamCarver {
         }
     }
 
-    // private class SPNode implements Comparable<SPNode> {
-    //     double energy;
-    //     int[] path;
-    //
-    //     public SPNode(double energy, int[] path) {
-    //         this.energy = energy;
-    //         this.path = path;
-    //     }
-    //
-    //     @Override
-    //     public int compareTo(SPNode that) {
-    //         return Double.compare(this.energy, that.energy);
-    //     }
-    // }
 
     private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double[][] energyTo,
                        Pixel[][] pixelTo) {
@@ -215,6 +202,8 @@ public class SeamCarver {
     }
 
     public double energy(int x, int y) {
+        if (x < 0 || x > width() - 1) throw new IllegalArgumentException("not allowed, bad x");
+        if (y < 0 || y > height() - 1) throw new IllegalArgumentException("not allowed, bad y");
         return energyArray[x][y];
     }
 
@@ -224,7 +213,6 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         int[] sp = traverseDownFromPixel(true);
         if (debug) {
-            // StdOut.println(Arrays.toString(sp));
             StdOut.println("Horizontal seam finding time: " + sw.elapsedTime() + " seconds.");
         }
         return sp;
@@ -247,6 +235,8 @@ public class SeamCarver {
 
     // remove horizontal seam from current picture
     public void removeHorizontalSeam(int[] seam) {
+        if (seam == null) throw new IllegalArgumentException("null horizontal seam");
+        if (seam.length != width()) throw new IllegalArgumentException("bad horizontal seam");
         boolean debug = false;
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width(), height() - 1);
@@ -268,6 +258,8 @@ public class SeamCarver {
     }
 
     public void removeVerticalSeam(int[] seam) {
+        if (seam == null) throw new IllegalArgumentException("null vertical seam");
+        if (seam.length != height()) throw new IllegalArgumentException("bad horizontal seam");
         boolean debug = false;
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width() - 1, height());
