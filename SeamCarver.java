@@ -245,7 +245,7 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width(), height() - 1);
         for (int i = 0; i < width(); i++) {
-            if (seam[i] < 1 || seam[i] > height() - 2)
+            if (seam[i] < 0 || seam[i] > height() - 1)
                 throw new IllegalArgumentException("bad seam val");
             int adder = 0;
             for (int k = 0; k < height(); k++) {
@@ -280,7 +280,7 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width() - 1, height());
         for (int i = 0; i < height(); i++) {
-            if (seam[i] < 1 || seam[i] > width() - 2)
+            if (seam[i] < 0 || seam[i] > width() - 1)
                 throw new IllegalArgumentException("bad seam val");
             int adder = 0;
             for (int k = 0; k < width(); k++) {
