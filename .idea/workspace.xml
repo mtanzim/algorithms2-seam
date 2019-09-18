@@ -75,7 +75,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ResizeDemo">
+  <component name="RunManager" selected="Application.PrintSeams">
     <configuration name="PrintEnergy" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintEnergy" />
       <module name="Algorithms, Part II" />
@@ -88,7 +88,7 @@
     <configuration name="PrintSeams" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintSeams" />
       <module name="Algorithms, Part II" />
-      <option name="PROGRAM_PARAMETERS" value="12x10.png" />
+      <option name="PROGRAM_PARAMETERS" value="6x5.png" />
       <option name="VM_PARAMETERS" value="-ea" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -97,7 +97,7 @@
     <configuration name="ResizeDemo" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="ResizeDemo" />
       <module name="Algorithms, Part II" />
-      <option name="PROGRAM_PARAMETERS" value="HJocean.png 219 150" />
+      <option name="PROGRAM_PARAMETERS" value="HJocean.png 50 50" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>

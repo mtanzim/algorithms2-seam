@@ -20,7 +20,7 @@ public class SeamCarver {
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
         if (picture == null) throw new IllegalArgumentException("bad pic");
-        this.picture = picture;
+        this.picture = new Picture(picture);
         calculateEnergy();
     }
 
@@ -147,7 +147,7 @@ public class SeamCarver {
             StdOut.println("path: " + Arrays.toString(path));
 
         }
-        while (tracker > 0) {
+        while (tracker > -1) {
             path[tracker] = curPixel.x;
             curPixel = pixelTo[curPixel.x][curPixel.y];
             tracker--;
