@@ -54,6 +54,7 @@
   </component>
   <component name="ProjectId" id="1Q8pen6dLZTFMCvk22AVu6d6tv4" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="ToolWindowMessages.ShowToolbar" value="false" />
     <property name="ToolWindowRun.ShowToolbar" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
@@ -75,7 +76,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.PrintSeams">
+  <component name="RunManager" selected="Application.ResizeDemo">
     <configuration name="PrintEnergy" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintEnergy" />
       <module name="Algorithms, Part II" />

@@ -15,7 +15,7 @@ public class SeamCarver {
     private Picture picture;
     private final int START_INDICATOR = -1;
     private double[][] energyArray;
-    private double[][] energyArrayTransposed;
+    // private double[][] energyArrayTransposed;
 
     // create a seam carver object based on the given picture
     public SeamCarver(Picture picture) {
@@ -28,12 +28,12 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         boolean debug = false;
         this.energyArray = new double[width()][height()];
-        this.energyArrayTransposed = new double[height()][width()];
+        // this.energyArrayTransposed = new double[height()][width()];
         for (int row = 0; row < height(); row++) {
             for (int col = 0; col < width(); col++) {
                 double curEnergy = calculateEnergy(col, row);
                 energyArray[col][row] = curEnergy;
-                energyArrayTransposed[row][col] = curEnergy;
+                // energyArrayTransposed[row][col] = curEnergy;
             }
         }
         if (debug) {
@@ -70,17 +70,17 @@ public class SeamCarver {
     // traverse pixels in topological order, and visit all of its
     // adjancent(connected) pixels
     // private int[] traverseDownFromPixel(int x, int y, boolean isTransposed) {
-    private int[] traverseDownFromPixel(boolean isTransposed) {
+    private int[] traverseDownFromPixel() {
         boolean debug = false;
         double[][] localEnergy = energyArray;
         int localWidth = width();
         int localHeight = height();
 
-        if (isTransposed) {
-            localEnergy = energyArrayTransposed;
-            localHeight = width();
-            localWidth = height();
-        }
+        // if (isTransposed) {
+        //     localEnergy = energyArrayTransposed;
+        //     localHeight = width();
+        //     localWidth = height();
+        // }
         // if (x < 0 || x > localWidth || y < 0 || y > localHeight)
         //     throw new IllegalArgumentException("invalid starting index");
 
@@ -188,7 +188,7 @@ public class SeamCarver {
 
     // current picture
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     }
 
     // width of current picture
@@ -211,7 +211,12 @@ public class SeamCarver {
     public int[] findHorizontalSeam() {
         boolean debug = false;
         Stopwatch sw = new Stopwatch();
-        int[] sp = traverseDownFromPixel(true);
+        Picture oldPic = new Picture(this.picture);
+        this.picture = transposePic();
+        calculateEnergy();
+        int[] sp = traverseDownFromPixel();
+        this.picture = oldPic;
+        calculateEnergy();
         if (debug) {
             StdOut.println("Horizontal seam finding time: " + sw.elapsedTime() + " seconds.");
         }
@@ -223,10 +228,9 @@ public class SeamCarver {
         boolean debug = false;
 
         Stopwatch sw = new Stopwatch();
-        int[] sp = traverseDownFromPixel(false);
+        int[] sp = traverseDownFromPixel();
 
         if (debug) {
-            // StdOut.println(Arrays.toString(sp));
             StdOut.println("Vertical seam finding time: " + sw.elapsedTime() + " seconds.");
         }
         return sp;
@@ -241,6 +245,8 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width(), height() - 1);
         for (int i = 0; i < width(); i++) {
+            if (seam[i] < 1 || seam[i] > height() - 2)
+                throw new IllegalArgumentException("bad seam val");
             int adder = 0;
             for (int k = 0; k < height(); k++) {
                 if (k == seam[i]) {
@@ -257,6 +263,16 @@ public class SeamCarver {
         }
     }
 
+    private Picture transposePic() {
+        Picture newPic = new Picture(height(), width());
+        for (int i = 0; i < width(); i++) {
+            for (int j = 0; j < height(); j++) {
+                newPic.setRGB(j, i, picture.getRGB(i, j));
+            }
+        }
+        return newPic;
+    }
+
     public void removeVerticalSeam(int[] seam) {
         if (seam == null) throw new IllegalArgumentException("null vertical seam");
         if (seam.length != height()) throw new IllegalArgumentException("bad horizontal seam");
@@ -264,6 +280,8 @@ public class SeamCarver {
         Stopwatch sw = new Stopwatch();
         Picture newPic = new Picture(width() - 1, height());
         for (int i = 0; i < height(); i++) {
+            if (seam[i] < 1 || seam[i] > width() - 2)
+                throw new IllegalArgumentException("bad seam val");
             int adder = 0;
             for (int k = 0; k < width(); k++) {
                 if (k == seam[i]) {
