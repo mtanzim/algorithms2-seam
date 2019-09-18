@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c1e4f978-b3bd-4ae1-84e9-9e1170bce808" name="Default" comment="" />
+    <list default="true" id="c1e4f978-b3bd-4ae1-84e9-9e1170bce808" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SeamCarver.java" beforeDir="false" afterPath="$PROJECT_DIR$/SeamCarver.java" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,11 +75,11 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.ResizeDemo">
+  <component name="RunManager" selected="Application.PrintSeams">
     <configuration name="PrintEnergy" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintEnergy" />
       <module name="Algorithms, Part II" />
-      <option name="PROGRAM_PARAMETERS" value="6x5.png" />
+      <option name="PROGRAM_PARAMETERS" value="7x10.png" />
       <option name="VM_PARAMETERS" value="-ea" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -85,7 +88,7 @@
     <configuration name="PrintSeams" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="PrintSeams" />
       <module name="Algorithms, Part II" />
-      <option name="PROGRAM_PARAMETERS" value="6x5.png" />
+      <option name="PROGRAM_PARAMETERS" value="12x10.png" />
       <option name="VM_PARAMETERS" value="-ea" />
       <method v="2">
         <option name="Make" enabled="true" />

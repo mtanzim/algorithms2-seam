@@ -23,7 +23,7 @@ public class SeamCarver {
         calculateEnergy();
     }
 
-    private void calculateEnergy(){
+    private void calculateEnergy() {
         Stopwatch sw = new Stopwatch();
         boolean debug = false;
         this.energyArray = new double[width()][height()];
@@ -54,22 +54,23 @@ public class SeamCarver {
         }
     }
 
-    private class SPNode implements Comparable<SPNode> {
-        double energy;
-        int[] path;
+    // private class SPNode implements Comparable<SPNode> {
+    //     double energy;
+    //     int[] path;
+    //
+    //     public SPNode(double energy, int[] path) {
+    //         this.energy = energy;
+    //         this.path = path;
+    //     }
+    //
+    //     @Override
+    //     public int compareTo(SPNode that) {
+    //         return Double.compare(this.energy, that.energy);
+    //     }
+    // }
 
-        public SPNode(double energy, int[] path) {
-            this.energy = energy;
-            this.path = path;
-        }
-
-        @Override
-        public int compareTo(SPNode that) {
-            return Double.compare(this.energy, that.energy);
-        }
-    }
-
-    private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double[][] energyTo, Pixel[][] pixelTo) {
+    private void relax(int x1, int y1, int x2, int y2, double[][] localEnergy, double[][] energyTo,
+                       Pixel[][] pixelTo) {
         boolean debug = false;
         if (debug)
             StdOut.println("Relaxing edge to " + (new Pixel(x2, y2).toString()));
@@ -105,31 +106,15 @@ public class SeamCarver {
             }
         }
 
-        // find starting point
-        double minStartEnergy = energyTo[0][1];
-        int startX = 0;
-        for (int i = 1; i < localWidth; i++) {
-            if (minStartEnergy > energyArray[i][1]) {
-                minStartEnergy = energyArray[i][1];
-                startX = i;
-            }
+        for (int k = 0; k <= localWidth - 1; k++) {
+            energyTo[k][0] = 1000.0;
+            pixelTo[k][0] = new Pixel(START_INDICATOR, START_INDICATOR);
         }
-        if (debug) StdOut.println("Start x is: " + startX );
-
-        // starting point
-        energyTo[startX][0] = 0.0;
-        pixelTo[startX][0] = new Pixel(START_INDICATOR, START_INDICATOR);
-
         for (int i = 0; i < localHeight - 1; i++) {
-            for (int k = startX - i; k <= startX + i; k++) {
-                if (k < 0 || k > localWidth - 1)
-                    continue;
-                // relax adjacent pixels
-                for (int m = -1; m < 2; m++) {
-                    if (k + m < 0 || k + m > localWidth - 1)
-                        continue;
-                    relax(k, i, k + m, i + 1, localEnergy, energyTo, pixelTo);
-                }
+            for (int k = 0; k <= localWidth - 1; k++) {
+                if (k - 1 > 0) relax(k, i, k - 1, i + 1, localEnergy, energyTo, pixelTo);
+                relax(k, i, k, i + 1, localEnergy, energyTo, pixelTo);
+                if (k + 1 < localWidth) relax(k, i, k + 1, i + 1, localEnergy, energyTo, pixelTo);
             }
         }
         // algo for finding shortest path:
@@ -149,13 +134,9 @@ public class SeamCarver {
         int[] path = new int[localHeight];
         Pixel curPixel = bottomPixel;
         int tracker = localHeight - 1;
-        while (curPixel.x != START_INDICATOR) {
-            path[tracker] = curPixel.x;
-            curPixel = pixelTo[curPixel.x][curPixel.y];
-            tracker--;
-        }
 
         if (debug) {
+            StdOut.println();
             for (int row = 0; row < localHeight; row++) {
                 for (int col = 0; col < localWidth; col++)
                     StdOut.printf("%9.2f ", energyTo[col][row]);
@@ -179,8 +160,11 @@ public class SeamCarver {
             StdOut.println("path: " + Arrays.toString(path));
 
         }
-
-        // return new SPNode(minTotalEnergy, path);
+        while (tracker > 0) {
+            path[tracker] = curPixel.x;
+            curPixel = pixelTo[curPixel.x][curPixel.y];
+            tracker--;
+        }
         return path;
     }
 
@@ -265,7 +249,7 @@ public class SeamCarver {
     public void removeHorizontalSeam(int[] seam) {
         boolean debug = false;
         Stopwatch sw = new Stopwatch();
-        Picture newPic = new Picture(width(), height()-1);
+        Picture newPic = new Picture(width(), height() - 1);
         for (int i = 0; i < width(); i++) {
             int adder = 0;
             for (int k = 0; k < height(); k++) {
@@ -273,7 +257,7 @@ public class SeamCarver {
                     adder = 1;
                     continue;
                 }
-                newPic.setRGB(i, k-adder, picture.getRGB(i, k));
+                newPic.setRGB(i, k - adder, picture.getRGB(i, k));
             }
         }
         this.picture = newPic;
